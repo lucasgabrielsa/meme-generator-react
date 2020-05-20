@@ -12,12 +12,9 @@ class MemeGenerator extends React.Component {
       allMemeImgs: [],
       isLoading: true,
     };
-
-    this.handleChange = this.handleChange.bind(this);
-    this.handleGenerate = this.handleGenerate.bind(this);
   }
 
-  handleChange(event) {
+  handleChange = (event) => {
     const { value, name } = event.target;
     this.setState((prevState) => {
       return {
@@ -25,9 +22,9 @@ class MemeGenerator extends React.Component {
         [name]: value,
       };
     });
-  }
+  };
 
-  handleGenerate(event) {
+  handleGenerate = (event) => {
     const randomIndex = Math.floor(
       Math.random() * this.state.allMemeImgs.length
     );
@@ -38,7 +35,7 @@ class MemeGenerator extends React.Component {
       };
     });
     event.preventDefault();
-  }
+  };
 
   componentDidMount() {
     fetch("https://api.imgflip.com/get_memes")
