@@ -1,5 +1,6 @@
 import React from "react";
 import MemeFormContainer from "./MemeFormContainer";
+import MemeGenerated from "./MemeGenerated";
 
 class MemeGenerator extends React.Component {
   constructor() {
@@ -7,11 +8,13 @@ class MemeGenerator extends React.Component {
     this.state = {
       topText: "",
       bottomText: "",
-      randomImage: "https://i.imgflip.com/1ur9b0.jpg",
+      randomImage: "",
       allMemeImgs: [],
+      isLoading: true,
     };
 
     this.handleChange = this.handleChange.bind(this);
+    this.handleGenerate = this.handleGenerate.bind(this);
   }
 
   handleChange(event) {
@@ -24,15 +27,31 @@ class MemeGenerator extends React.Component {
     });
   }
 
+  handleGenerate(event) {
+    const randomIndex = Math.floor(
+      Math.random() * this.state.allMemeImgs.length
+    );
+    this.setState((prevState) => {
+      return {
+        ...prevState,
+        randomImage: prevState.allMemeImgs[randomIndex].url,
+      };
+    });
+    event.preventDefault();
+  }
+
   componentDidMount() {
     fetch("https://api.imgflip.com/get_memes")
       .then((response) => response.json())
       .then((response) =>
         this.setState((prevState) => {
           const { memes } = response.data;
+          const randomIndex = Math.floor(Math.random() * memes.length);
           return {
             ...prevState,
             allMemeImgs: memes,
+            randomImage: memes[randomIndex].url,
+            isLoading: false,
           };
         })
       );
@@ -41,7 +60,12 @@ class MemeGenerator extends React.Component {
   render() {
     return (
       <div>
-        <MemeFormContainer {...this.state} handleChange={this.handleChange} />
+        <MemeFormContainer
+          {...this.state}
+          handleChange={this.handleChange}
+          handleGenerate={this.handleGenerate}
+        />
+        <MemeGenerated {...this.state} />
       </div>
     );
   }
